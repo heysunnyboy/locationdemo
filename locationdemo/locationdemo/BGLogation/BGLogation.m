@@ -9,6 +9,9 @@
 #import "BGLogation.h"
 #import "BGTask.h"
 @interface BGLogation()
+{
+    BOOL isCollect;
+}
 @property (strong , nonatomic) BGTask *bgTask; //后台任务
 @property (strong , nonatomic) NSTimer *restarTimer; //重新开启后台任务定时器
 @property (strong , nonatomic) NSTimer *closeCollectLocationTimer; //关闭定位定时器 （减少耗电）
@@ -21,6 +24,7 @@
     {
         //
         _bgTask = [BGTask shareBGTask];
+        isCollect = NO;
         //监听进入后台通知
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationEnterBackground) name:UIApplicationDidEnterBackgroundNotification object:nil];
     }
@@ -28,15 +32,15 @@
 }
 +(CLLocationManager *)shareBGLocation
 {
-    static CLLocationManager *locationManger;
+    static CLLocationManager *_locationManager;
     static dispatch_once_t predicate;
     dispatch_once(&predicate, ^{
-        locationManger = [[CLLocationManager alloc]init];
-        locationManger.desiredAccuracy = kCLLocationAccuracyBestForNavigation;
-        locationManger.allowsBackgroundLocationUpdates = YES; //允许后台刷新
-        locationManger.pausesLocationUpdatesAutomatically = NO; //不允许自动暂停刷新
+            _locationManager = [[CLLocationManager alloc] init];
+            _locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation;
+            _locationManager.allowsBackgroundLocationUpdates = YES;
+            _locationManager.pausesLocationUpdatesAutomatically = NO;
     });
-    return locationManger;
+    return _locationManager;
 }
 //后台监听方法
 -(void)applicationEnterBackground
@@ -54,6 +58,7 @@
 //重启定位服务
 -(void)restartLocation
 {
+    NSLog(@"重新启动定位");
     CLLocationManager *locationManager = [BGLogation shareBGLocation];
     locationManager.delegate = self;
     locationManager.distanceFilter = kCLDistanceFilterNone; // 不移动也可以后台刷新回调
@@ -61,7 +66,7 @@
         [locationManager requestAlwaysAuthorization];
     }
     [locationManager startUpdatingLocation];
-    [_bgTask beginNewBackgroundTask];
+    [self.bgTask beginNewBackgroundTask];
 }
 //开启服务
 - (void)startLocation {
@@ -93,20 +98,22 @@
 -(void)stopLocation
 {
     NSLog(@"停止定位");
+    isCollect = NO;
     CLLocationManager *locationManager = [BGLogation shareBGLocation];
     [locationManager stopUpdatingLocation];
 }
 #pragma mark --delegate
-//如果启程失效重新初始化
+//定位回调里执行重启定位和关闭定位
 -(void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray<CLLocation *> *)locations
 {
-    if(self.restarTimer) //如果线程还在跑，让他继续跑
-        return;
-    self.restarTimer = [NSTimer scheduledTimerWithTimeInterval:120 target:self selector:@selector(restarTimer) userInfo:nil repeats:YES];
-    if (self.closeCollectLocationTimer) {
+    NSLog(@"定位收集");
+    //如果正在10秒定时收集的时间，不需要执行延时开启和关闭定位
+    if (isCollect) {
         return;
     }
-    self.closeCollectLocationTimer = [NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(stopLocation) userInfo:nil repeats:YES];
+    [self performSelector:@selector(restartLocation) withObject:nil afterDelay:120];
+    [self performSelector:@selector(stopLocation) withObject:nil afterDelay:10];
+    isCollect = YES;//标记正在定位
 }
 - (void)locationManager: (CLLocationManager *)manager didFailWithError: (NSError *)error
 {

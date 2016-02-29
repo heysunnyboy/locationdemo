@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3DDA44711C84A1DC00A51650 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DDA44701C84A1DC00A51650 /* CoreLocation.framework */; };
+		3DDA44731C84A1E400A51650 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DDA44721C84A1E400A51650 /* CoreGraphics.framework */; };
+		3DDA44751C84A1F200A51650 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DDA44741C84A1F200A51650 /* UIKit.framework */; };
+		3DDA44771C84A1FA00A51650 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DDA44761C84A1FA00A51650 /* Foundation.framework */; };
 		6CF218381C7D571E00AB1F2C /* BGLogation.m in Sources */ = {isa = PBXBuildFile; fileRef = 6CF218371C7D571E00AB1F2C /* BGLogation.m */; };
 		6CF6432C1C7BF4470053FE42 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6CF6432B1C7BF4470053FE42 /* main.m */; };
 		6CF6432F1C7BF4470053FE42 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6CF6432E1C7BF4470053FE42 /* AppDelegate.m */; };
@@ -29,6 +33,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		3DDA44701C84A1DC00A51650 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		3DDA44721C84A1E400A51650 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		3DDA44741C84A1F200A51650 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		3DDA44761C84A1FA00A51650 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		6CF218361C7D571E00AB1F2C /* BGLogation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGLogation.h; sourceTree = "<group>"; };
 		6CF218371C7D571E00AB1F2C /* BGLogation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGLogation.m; sourceTree = "<group>"; };
 		6CF643271C7BF4470053FE42 /* locationdemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = locationdemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -53,6 +61,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3DDA44771C84A1FA00A51650 /* Foundation.framework in Frameworks */,
+				3DDA44751C84A1F200A51650 /* UIKit.framework in Frameworks */,
+				3DDA44731C84A1E400A51650 /* CoreGraphics.framework in Frameworks */,
+				3DDA44711C84A1DC00A51650 /* CoreLocation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -80,6 +92,10 @@
 		6CF6431E1C7BF4470053FE42 = {
 			isa = PBXGroup;
 			children = (
+				3DDA44761C84A1FA00A51650 /* Foundation.framework */,
+				3DDA44741C84A1F200A51650 /* UIKit.framework */,
+				3DDA44721C84A1E400A51650 /* CoreGraphics.framework */,
+				3DDA44701C84A1DC00A51650 /* CoreLocation.framework */,
 				6CF643291C7BF4470053FE42 /* locationdemo */,
 				6CF643431C7BF4480053FE42 /* locationdemoTests */,
 				6CF643281C7BF4470053FE42 /* Products */,

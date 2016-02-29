@@ -33,6 +33,7 @@
 //开启新的后台任务
 -(UIBackgroundTaskIdentifier)beginNewBackgroundTask
 {
+
     UIApplication *application = [UIApplication sharedApplication];
     __block UIBackgroundTaskIdentifier bgTaskId = UIBackgroundTaskInvalid;
     if([application respondsToSelector:@selector(beginBackgroundTaskWithExpirationHandler:)])
@@ -41,19 +42,20 @@
             NSLog(@"bgTask 过期 %lu",(unsigned long)bgTaskId);
             [self.bgTaskIdList removeObject:@(bgTaskId)];//过期任务从后台数组删除
             bgTaskId = UIBackgroundTaskInvalid;
-            [self endBackGroundTask:NO];
+            [application endBackgroundTask:bgTaskId];
         }];
     }
+    //如果上次记录的后台任务已经失效了，就记录最新的任务为主任务
     if (_masterTaskId == UIBackgroundTaskInvalid) {
         self.masterTaskId = bgTaskId;
         NSLog(@"开启后台任务 %lu",(unsigned long)bgTaskId);
     }
-    else
+    else //如果上次开启的后台任务还未结束，就提前关闭了，使用最新的后台任务
     {
         //add this id to our list
         NSLog(@"保持后台任务 %lu", (unsigned long)bgTaskId);
         [self.bgTaskIdList addObject:@(bgTaskId)];
-        [self endBackGroundTask:YES];
+        [self endBackGroundTask:NO];//留下最新创建的后台任务
     }
 
     return bgTaskId;
@@ -61,6 +63,7 @@
 /**
  *
  @param all : yes 关闭所有 ,no 只留下主后台任务
+ all:yes 为了去处多余残留的后台任务，只保留最新的创建的
  *
  **/
 -(void)endBackGroundTask:(BOOL)all
