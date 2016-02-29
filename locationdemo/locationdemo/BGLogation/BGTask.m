@@ -48,6 +48,14 @@
         self.masterTaskId = bgTaskId;
         NSLog(@"开启后台任务 %lu",(unsigned long)bgTaskId);
     }
+    else
+    {
+        //add this id to our list
+        NSLog(@"保持后台任务 %lu", (unsigned long)bgTaskId);
+        [self.bgTaskIdList addObject:@(bgTaskId)];
+        [self endBackGroundTask:YES];
+    }
+
     return bgTaskId;
 }
 /**
@@ -72,6 +80,16 @@
     if(self.bgTaskIdList.count > 0)
     {
         NSLog(@"后台任务正在保持运行 %ld",(long)[_bgTaskIdList[0]integerValue]);
+    }
+    if(all)
+    {
+        [application endBackgroundTask:self.masterTaskId];
+        self.masterTaskId = UIBackgroundTaskInvalid;
+    }
+    else
+    {
+        NSLog(@"kept master background task id %lu", (unsigned long)self.masterTaskId);
+
     }
 }
 @end

@@ -41,6 +41,7 @@
 //后台监听方法
 -(void)applicationEnterBackground
 {
+    NSLog(@"come in background");
     CLLocationManager *locationManager = [BGLogation shareBGLocation];
     locationManager.delegate = self;
     locationManager.distanceFilter = kCLDistanceFilterNone; // 不移动也可以后台刷新回调
@@ -62,9 +63,9 @@
     [locationManager startUpdatingLocation];
     [_bgTask beginNewBackgroundTask];
 }
-//开启后台服务
-- (void)startLocationTracking {
-    NSLog(@"startLocationTracking");
+//开启服务
+- (void)startLocation {
+    NSLog(@"开启定位");
     
     if ([CLLocationManager locationServicesEnabled] == NO) {
         NSLog(@"locationServicesEnabled false");
@@ -91,8 +92,45 @@
 //停止后台定位
 -(void)stopLocation
 {
+    NSLog(@"停止定位");
     CLLocationManager *locationManager = [BGLogation shareBGLocation];
     [locationManager stopUpdatingLocation];
+}
+#pragma mark --delegate
+//如果启程失效重新初始化
+-(void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray<CLLocation *> *)locations
+{
+    if(self.restarTimer) //如果线程还在跑，让他继续跑
+        return;
+    self.restarTimer = [NSTimer scheduledTimerWithTimeInterval:120 target:self selector:@selector(restarTimer) userInfo:nil repeats:YES];
+    if (self.closeCollectLocationTimer) {
+        return;
+    }
+    self.closeCollectLocationTimer = [NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(stopLocation) userInfo:nil repeats:YES];
+}
+- (void)locationManager: (CLLocationManager *)manager didFailWithError: (NSError *)error
+{
+    // NSLog(@"locationManager error:%@",error);
+    
+    switch([error code])
+    {
+        case kCLErrorNetwork: // general, network-related error
+        {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"网络错误" message:@"请检查网络连接" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
+            [alert show];
+        }
+            break;
+        case kCLErrorDenied:{
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"请开启后台服务" message:@"应用没有不可以定位，需要在在设置/通用/后台应用刷新开启" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
+            [alert show];
+        }
+            break;
+        default:
+        {
+            
+        }
+            break;
+    }
 }
 
 @end

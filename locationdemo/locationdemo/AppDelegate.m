@@ -8,9 +8,12 @@
 
 #import "AppDelegate.h"
 #import "BGTask.h"
+#import "BGLogation.h"
 @interface AppDelegate ()
 @property (strong , nonatomic) BGTask *task;
 @property (strong , nonatomic) NSTimer *bgTimer;
+@property (strong , nonatomic) BGLogation *bgLocation;
+@property (strong , nonatomic) CLLocationManager *location;
 @end
 
 @implementation AppDelegate
@@ -28,12 +31,14 @@
     }
     else if ([UIApplication sharedApplication].backgroundRefreshStatus == UIBackgroundRefreshStatusRestricted)
     {
-        alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"后台应用刷新关闭" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"设备不可以定位" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
         [alert show];
     }
     else
     {
-        NSTimer *timer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(log) userInfo:nil repeats:YES];
+        self.bgLocation = [[BGLogation alloc]init];
+        [self.bgLocation startLocation];
+        [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(log) userInfo:nil repeats:YES];
     }
     return YES;
 }
@@ -51,7 +56,6 @@
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
-   
     
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
